@@ -31,19 +31,6 @@ public class WorldRendererMixin {
                                          Camera camera, GameRenderer gameRenderer,
                                          LightmapTextureManager lightmapTextureManager,
                                          Matrix4f matrix4f, Matrix4f matrix4f2, CallbackInfo ci) {
-
-        // Тестовый спавн (потом лучше вынести из рендера в клиентский тик)
-//        if (ParticleManager.INSTANCE.getParticles().isEmpty()) {
-//            ParticleAPI.create()
-//                    .at(new Vec3d(0, 100, 0))
-//                    .behavior(new OrbitBehavior(1.3f, 0.1f))
-//                    .color(1.0f, 0.0f, 0.0f)
-//                    .size(0.3f)
-//                    .lifetime(12000)
-//                    .spawn();
-//        }
-
-        // Если частиц всё равно нет — выходим до инициализации OpenGL и BufferBuilder
         if (ParticleManager.INSTANCE.getParticles().isEmpty()) {
             return;
         }
@@ -66,13 +53,8 @@ public class WorldRendererMixin {
 
         synchronized (ParticleManager.INSTANCE.getParticles()) {
             for (ThreedParticle particle : ParticleManager.INSTANCE.getParticles()) {
-                // Обновляем size, color и alpha перед отрисовкой кадра
                 particle.prepareRender(tickDelta);
-
-                // Если партикл полностью прозрачный, пропускаем отрисовку
                 if (particle.alpha <= 0.001f) continue;
-
-                // 1. Отрисовка шлейфа (через for-each, так как getTrailPositions возвращает Collection/Deque)
                 Collection<Vec3d> trail = particle.getTrailPositions();
                 int trailSizeCount = trail.size();
                 int index = 0;
@@ -84,7 +66,6 @@ public class WorldRendererMixin {
 
                     float progress = (float) index / trailSizeCount;
                     float trailRadius = particle.size * (1.0f - progress * 0.7f);
-                    // Умножаем прозрачность шлейфа на общую alpha партикла!
                     float trailAlpha = (0.5f * (1.0f - progress)) * particle.alpha;
 
                     drawGlowCircle(bufferBuilder, matrices.peek().getPositionMatrix(), trailRadius, particle.color, trailAlpha);
@@ -92,8 +73,6 @@ public class WorldRendererMixin {
                     matrices.pop();
                     index++;
                 }
-
-                // 2. Отрисовка головы (основного ядра) партикла
                 matrices.push();
                 Vec3d smoothPos = particle.getInterpolatedPosition(tickDelta);
                 matrices.translate(smoothPos.x - cameraPos.x, smoothPos.y - cameraPos.y, smoothPos.z - cameraPos.z);
@@ -105,8 +84,6 @@ public class WorldRendererMixin {
                 matrices.pop();
             }
         }
-
-        // Безопасное завершение буфера в 1.21.1 (защита от краша при 0 вершин)
         BuiltBuffer builtBuffer = bufferBuilder.endNullable();
         if (builtBuffer != null) {
             BufferRenderer.drawWithGlobalProgram(builtBuffer);
@@ -119,7 +96,7 @@ public class WorldRendererMixin {
     }
 
     private void drawGlowCircle(BufferBuilder buffer, Matrix4f matrix, float radius, Vector3f color, float maxAlpha) {
-        int segments = 8;
+        int segments = 16;
         float r = color.x;
         float g = color.y;
         float b = color.z;

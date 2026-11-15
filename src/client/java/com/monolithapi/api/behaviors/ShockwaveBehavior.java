@@ -23,11 +23,8 @@ public class ShockwaveBehavior implements IParticleBehavior {
         this.prevRadius = this.currentRadius;
 
         if (this.currentRadius < maxRadius) {
-            // Эффект затухания скорости при приближении к границе
             double remaining = maxRadius - this.currentRadius;
             double step = expansionSpeed * (remaining / maxRadius + 0.1);
-
-            // Не даем радиусу превысить maxRadius
             this.currentRadius = Math.min(maxRadius, this.currentRadius + step);
         }
     }
@@ -45,12 +42,8 @@ public class ShockwaveBehavior implements IParticleBehavior {
     @Override
     public void onRender(ThreedParticle particle, float tickDelta) {
         if (maxRadius <= 0) return;
-
-        // Прогресс расширения волны от 0.0 (центр) до 1.0 (край)
         double smoothRadius = this.prevRadius + (this.currentRadius - this.prevRadius) * tickDelta;
         float radiusProgress = (float) Math.clamp(smoothRadius / maxRadius, 0.0, 1.0);
-
-        // Волна ярко вспыхивает в начале и плавно растворяется на последних 30% пути
         if (radiusProgress > 0.7f) {
             particle.alpha = 1.0f - ((radiusProgress - 0.7f) / 0.3f);
         } else {

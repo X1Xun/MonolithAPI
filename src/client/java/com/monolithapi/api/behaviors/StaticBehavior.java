@@ -17,7 +17,6 @@ public class StaticBehavior implements IParticleBehavior {
 
     @Override
     public void tick(ThreedParticle particle) {
-        // Позиция неизменна
     }
 
     @Override
@@ -28,8 +27,6 @@ public class StaticBehavior implements IParticleBehavior {
     @Override
     public void onRender(ThreedParticle particle, float tickDelta) {
         if (!fadeOut) return;
-
-        // Плавное затухание в последние 25% времени жизни
         float progress = particle.getProgress(tickDelta);
         if (progress > 0.75f) {
             particle.alpha = 1.0f - ((progress - 0.75f) / 0.25f);

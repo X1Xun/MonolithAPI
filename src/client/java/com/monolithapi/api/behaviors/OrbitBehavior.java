@@ -45,7 +45,6 @@ public class OrbitBehavior implements IParticleBehavior {
 
     @Override
     public void onRender(ThreedParticle particle, float tickDelta) {
-        // Пример: плавное затухание в последние 20% жизни партикла
         float progress = particle.getProgress(tickDelta);
         if (progress > 0.8f) {
             particle.alpha = 1.0f - ((progress - 0.8f) / 0.2f);

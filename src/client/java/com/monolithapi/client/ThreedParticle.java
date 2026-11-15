@@ -18,8 +18,6 @@ public class ThreedParticle {
 
     public int age;
     public final int maxAge;
-
-    // История позиций для шлейфа (ArrayDeque быстрее ArrayList при вставке в начало и удалении с конца)
     private final Deque<Vec3d> trailPositions = new ArrayDeque<>();
     private final int maxTrailLength = 12;
 
@@ -36,31 +34,19 @@ public class ThreedParticle {
 
     public void tick() {
         this.age++;
-
-        // Запоминаем позицию ДО тика поведения для плавного шлейфа
         this.trailPositions.addFirst(getInterpolatedPosition(0.0f));
         if (this.trailPositions.size() > maxTrailLength) {
             this.trailPositions.removeLast();
         }
-
-        // Обновляем математику траектории
         this.behavior.tick(this);
     }
 
     public Vec3d getInterpolatedPosition(float tickDelta) {
         return this.behavior.getPosition(this, this.anchorCenter, tickDelta);
     }
-
-    /**
-     * Вызывается в рендерере перед отрисовкой партикла, чтобы поведение обновило size, color и alpha.
-     */
     public void prepareRender(float tickDelta) {
         this.behavior.onRender(this, tickDelta);
     }
-
-    /**
-     * Возвращает прогресс жизни от 0.0f (старт) до 1.0f (смерть).
-     */
     public float getProgress(float tickDelta) {
         if (this.maxAge <= 0) return 1.0f;
         return Math.min(1.0f, (this.age + tickDelta) / (float) this.maxAge);

@@ -5,7 +5,7 @@ import com.monolithapi.client.ParticleManager;
 import net.minecraft.util.math.Vec3d;
 import org.joml.Vector3f;
 
-public class ParticleAPI {
+public class MonolithAPI {
 
     public static Builder create() {
         return new Builder();

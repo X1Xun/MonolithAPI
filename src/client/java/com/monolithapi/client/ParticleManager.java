@@ -6,8 +6,6 @@ import java.util.List;
 public class ParticleManager {
 
     public static final ParticleManager INSTANCE = new ParticleManager();
-
-    // Синхронизированный список, чтобы избежать крашей при многопоточном рендере
     private final List<ThreedParticle> particles = new ArrayList<>();
 
     private ParticleManager() {}
