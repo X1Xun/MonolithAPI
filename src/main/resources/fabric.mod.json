@@ -1,0 +1,38 @@
+{
+	"schemaVersion": 1,
+	"id": "monolithapi",
+	"version": "${version}",
+	"name": "MonolithAPI",
+	"description": "MonolithAPI is a high-performance procedural 3D particle engine and VFX library for Fabric 1.21.1, featuring custom trajectory behaviors, smooth motion trails,and ready-to-use geometric shapes.\n",
+	"authors": [
+		"XiXun"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "LGPL-3.0-only",
+	"icon": "assets/monolithapi/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.monolithapi.MonolithAPI"
+		],
+		"client": [
+			"com.monolithapi.client.MonolithAPIClient"
+		]
+	},
+	"mixins": [
+		"monolithapi.mixins.json",
+		{
+			"config": "monolithapi.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.19.3",
+		"minecraft": "~1.21.1",
+		"java": ">=21",
+		"fabric-api": "*"
+	}
+}

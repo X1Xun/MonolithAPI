@@ -1,0 +1,15 @@
+{
+	"required": true,
+	"package": "com.monolithapi.client.mixin",
+	"compatibilityLevel": "JAVA_21",
+	"client": [
+		"ExampleClientMixin",
+		"WorldRendererMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	},
+	"overwrites": {
+		"requireAnnotations": true
+	}
+}
